@@ -13,6 +13,7 @@
 
 enum colors
 {
+	COLOR_NONE,
 	COLOR_RED,
 	COLOR_YELLOW,
 	COLOR_ORANGE,
@@ -20,61 +21,68 @@ enum colors
 	COLOR_BLUE,
 	COLOR_CYAN,
 	COLOR_PINK,
-	COLORS_SIZE	//Know cout of colors
+	COLORS_SIZE //Know cout of colors
 };
 enum checkers
 {
-	CHECK_CORRECTPOS,
-	CHECK_COLOR_EXISTING,
-	CHECK_NOTHING
+	CHECK_NOTHING,
+	CHECK_CORREC_TPOS,
+	CHECK_COLOR_EXISTING
+
 };
-enum status{
+enum status
+{
 	PLAYER_PLAYING,
 	PLAYER_WON,
 	PLAYER_LOST
-
 };
+
+class Dots
+{
+private:
+	/* data */
+public:
+	Dots();
+	~Dots();
+
+	uint32_t color = COLOR_NONE;
+	uint32_t index;
+	bool checked = true;
+};
+
+class Holder
+{
+private:
+	/* data */
+public:
+	Holder();
+	~Holder();
+
+	Dots dot[COLUMNS];
+	bool guessed = false;
+
+	Dots markers[COLUMNS];
+	
+};
+
 class Mastermino
 {
 
 public:
-	Mastermino(int numColumns, int numEntrys);
+	Mastermino();
+	~Mastermino();
+
+	Holder holder[ROWS];
+	Holder masterCode;
 
 	void start();
-	void finishTurn();
 
-	bool entryAvailable(); //Return true if the user can entry more colors
-	void entryNewGuess(uint32_t newGuess);
-	void entryNewGuess(int guessIndex, uint32_t newGuess);
-	void entryGoBack();
-
-	bool checkGuess();
-
-	uint32_t *getResult();
-	uint8_t getResult(int indexColumn);
-	uint8_t getResult(int rowIndex, int columnIndex);
-
-	uint32_t *getGuess();
-	uint32_t getGuess(int rowInentryIndex);
-
-	uint32_t getHistory(int rowIndex, int rowColumn);
-
-	uint8_t getWinner();
-
-	uint8_t status();
+	int turnCount = 0;
+	int guessCount = 0;
+	void newEntry(uint32_t entryColor);
+	void finishGuess();
 
 private:
-	int _numColums;
-	int _numEntrys;
-	uint32_t _masterCode[COLUMNS];	 // Resized on init
-	uint32_t _historyGuesses[ROWS][COLUMNS]; // Resized on init
-	uint32_t _guess[COLUMNS];
-	int _guessCount = 0;
-	int _turnCount = 0;
-
-	int _maxTurns;
-	int _turn = 0;
-
-	void _generateSecretCode();
 };
+
 #endif

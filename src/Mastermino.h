@@ -62,7 +62,6 @@ public:
 	bool guessed = false;
 
 	Dots markers[COLUMNS];
-	
 };
 
 class Mastermino
@@ -80,9 +79,14 @@ public:
 	int turnCount = 0;
 	int guessCount = 0;
 	void newEntry(uint32_t entryColor);
+	bool entryAvailable();
 	void finishGuess();
 
+	uint8_t checkWin();
+
 private:
+	void _generateMastercode();
+	
 };
 
 #endif

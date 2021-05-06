@@ -15,41 +15,95 @@ void Mastermino::start()
 	{
 		masterCode.dot[i].color = COLOR_YELLOW;
 	}
-}
-void Mastermino::newEntry(uint32_t entryColor)
-{
-	//Allow entry, only if there is a dot free of color
-	if (!(guessCount > COLUMNS))
-	{
-		holder[turnCount].dot[guessCount].color = entryColor;
-		holder[turnCount].dot[guessCount].index = guessCount;
-
-		guessCount++;
-	}
-}
-
-void Mastermino::finishGuess()
-{
-	masterCode.dot[0].color = COLOR_PINK;
+	/*masterCode.dot[0].color = COLOR_PINK;
 	masterCode.dot[0].index = 0;
 	masterCode.dot[1].color = COLOR_RED;
 	masterCode.dot[1].index = 1;
 	masterCode.dot[2].color = COLOR_BLUE;
 	masterCode.dot[2].index = 2;
 	masterCode.dot[3].color = COLOR_ORANGE;
-	masterCode.dot[3].index = 3;
+	masterCode.dot[3].index = 3;*/
+	_generateMastercode();
+}
+void Mastermino::newEntry(uint32_t entryColor)
+{
+	//Allow entry, only if there is a dot free of color
+	if (!(guessCount >= COLUMNS))
+	{
+		holder[turnCount].dot[guessCount].color = entryColor;
+		holder[turnCount].dot[guessCount].index = guessCount;
+		Serial.print("Color ");
+		Serial.print(guessCount);
+		Serial.print(" set to: ");
+		Serial.println(entryColor);
+
+		guessCount++;
+	}
+}
+
+void Mastermino::_generateMastercode()
+{
+	//Generate secret code
+	Serial.println("New secret code is: ");
+
+	for (int i = 0; i < COLUMNS; i++)
+	{
+		int seed = analogRead(0);
+		int randomNum = seed % COLORS_SIZE - 1;
+		//Serial.println(randomNum);
+		masterCode.dot[i].color = colors(randomNum);
+		masterCode.dot[i].index = i;
+		//Serial.print(masterCode.dot[i].color);
+		//Serial.print(" , ");
+	}
+	//Serial.println();
+}
+
+bool Mastermino::entryAvailable()
+{
+	if (guessCount < COLUMNS && turnCount < ROWS)
+		return true;
+	return false;
+}
+
+uint8_t Mastermino::checkWin()
+{
+	int comparator = 0;
+	//Save each color count
+	for (int i = 0; i < COLUMNS; i++)
+	{
+		Serial.println(turnCount);
+		if (masterCode.dot[i].color == holder[turnCount].dot[i].color)
+		{
+			comparator++;
+		}
+	}
+	Serial.print("Comparator");
+	Serial.println(comparator);
+	if (comparator >= COLUMNS)
+	{
+		return PLAYER_WON;
+	}
+	else if (turnCount == ROWS-1)
+	{
+		return PLAYER_LOST;
+	}
+	return PLAYER_PLAYING;
+}
+
+void Mastermino::finishGuess()
+{
 
 	//Tesst
-	holder[turnCount].dot[0].color = COLOR_BLUE;
+	/*holder[turnCount].dot[0].color = COLOR_BLUE;
 	holder[turnCount].dot[0].index = 0;
 	holder[turnCount].dot[1].color = COLOR_ORANGE;
 	holder[turnCount].dot[1].index = 1;
-	holder[turnCount].dot[2].color = COLOR_PINK;
+	holder[turnCount].dot[2].color = COLOR_BLUE;
 	holder[turnCount].dot[2].index = 2;
 	holder[turnCount].dot[3].color = COLOR_PINK;
-	holder[turnCount].dot[3].index = 3;
-
-	guessCount = COLUMNS;
+	holder[turnCount].dot[3].index = 3;	
+	guessCount = COLUMNS;*/
 
 	//Only reset values when it is not the last line
 	if (turnCount < ROWS && guessCount >= COLUMNS)
@@ -116,7 +170,7 @@ void Mastermino::finishGuess()
 		for (int i = 0; i < COLUMNS; i++)
 		{
 			Dots masterColor = masterCode.dot[i];
-			if (guessCode_colors_count[masterColor.color] && !colorCheck[i])
+			if (guessCode_colors_count[masterColor.color])
 			{
 				if (masterColor.color == holder[turnCount].dot[i].color)
 				{
@@ -124,15 +178,14 @@ void Mastermino::finishGuess()
 				}
 				else
 				{
-					
+					Serial.println("COLOR ok");
 				}
-				colorCheck[i] = true;
 			}
 		}
 
 		//Set the last holder guessed, and increase turn
-		holder[turnCount].guessed = true;
-		turnCount++;
+		if(turnCount<ROWS-1)turnCount++;
+		
 	}
 }
 

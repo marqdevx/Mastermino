@@ -60,11 +60,18 @@ void Mastermino::_generateMastercode()
 	{
 		int seed = analogRead(0);
 		int randomNum = seed % (COLORS_SIZE - 1);
-		Serial.println(randomNum);
-		masterCode.dot[i].color = randomNum;
-		masterCode.dot[i].index = i;
-		//Serial.print(masterCode.dot[i].color);
-		Serial.print(" , ");
+		if (randomNum <= 0)
+		{
+			i--;
+		}
+		else
+		{
+			Serial.println(randomNum);
+			masterCode.dot[i].color = randomNum;
+			masterCode.dot[i].index = i;
+			//Serial.print(masterCode.dot[i].color);
+			Serial.print(" , ");
+		}
 	}
 	Serial.println();
 }
@@ -82,14 +89,14 @@ uint8_t Mastermino::checkWin()
 	//Save each color count
 	for (int i = 0; i < COLUMNS; i++)
 	{
-		Serial.println(turnCount);
+		//Serial.println(turnCount);
 		if (masterCode.dot[i].color == holder[turnCount].dot[i].color)
 		{
 			comparator++;
 		}
 	}
-	Serial.print("Comparator");
-	Serial.println(comparator);
+	/*Serial.print("Comparator");
+	Serial.println(comparator);*/
 	if (comparator >= COLUMNS)
 	{
 		return PLAYER_WON;
@@ -131,7 +138,7 @@ void Mastermino::getChecks()
 {
 	//Set markers on each Holder
 	//Check mastercode
-	int prevTurn = turnCount-1;
+	int prevTurn = turnCount - 1;
 	int masterCode_colors_count[COLORS_SIZE]; //Save the color with the count of repeated colors
 	int guessCode_colors_count[COLORS_SIZE];
 	//Block the over check of the values
@@ -201,7 +208,7 @@ void Mastermino::getChecks()
 				Serial.println("COLOR ok");
 				holder[prevTurn].markers[count].color = COLOR_WHITE;
 			}
-			
+
 			count++;
 		}
 	}

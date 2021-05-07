@@ -17,12 +17,26 @@ enum colors
 	COLOR_RED,
 	COLOR_YELLOW,
 	COLOR_ORANGE,
-	COLOR_BROWN,
-	COLOR_BLUE,
+	COLOR_GREEN,
+	COLOR_PURPLE,
 	COLOR_CYAN,
 	COLOR_PINK,
+	COLOR_WHITE,
 	COLORS_SIZE //Know cout of colors
 };
+
+enum LED:uint32_t{
+	LED_NONE = 0x0,
+	LED_RED = 0xF920,
+	LED_YELLOW = 0xFFE0,
+	LED_ORANGE = 0xFBA0,
+	LED_GREEN = 0x37E0,
+	LED_PURPLE = 0x029F,
+	LED_CYAN = 0x07FF,
+	LED_PINK = 0xF817,
+	LED_WHITE = 0xFFFF
+};
+
 enum checkers
 {
 	CHECK_NOTHING,
@@ -73,6 +87,7 @@ public:
 
 	Holder holder[ROWS];
 	Holder masterCode;
+	
 
 	void start();
 
@@ -83,6 +98,8 @@ public:
 	void finishGuess();
 
 	uint8_t checkWin();
+
+	void getChecks();
 
 private:
 	void _generateMastercode();

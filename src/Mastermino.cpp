@@ -2,6 +2,16 @@
 
 Mastermino::Mastermino()
 {
+	//Set all default values
+	for (int i = 0; i < ROWS; i++)
+	{
+		for (int c = 0; c < COLUMNS; c++)
+		{
+			holder[i].dot[c].color = COLOR_NONE;
+			holder[i].dot[c].index = c;
+			holder[i].markers[c].color = COLOR_NONE;
+		}
+	}
 }
 
 Mastermino::~Mastermino()
@@ -13,7 +23,7 @@ void Mastermino::start()
 	//Generate the secretCode
 	for (int i = 0; i < COLUMNS; i++)
 	{
-		masterCode.dot[i].color = COLOR_YELLOW;
+		masterCode.dot[i].color = COLOR_PINK;
 	}
 	/*masterCode.dot[0].color = COLOR_PINK;
 	masterCode.dot[0].index = 0;
@@ -49,14 +59,14 @@ void Mastermino::_generateMastercode()
 	for (int i = 0; i < COLUMNS; i++)
 	{
 		int seed = analogRead(0);
-		int randomNum = seed % COLORS_SIZE - 1;
-		//Serial.println(randomNum);
-		masterCode.dot[i].color = colors(randomNum);
+		int randomNum = seed % (COLORS_SIZE - 1);
+		Serial.println(randomNum);
+		masterCode.dot[i].color = randomNum;
 		masterCode.dot[i].index = i;
 		//Serial.print(masterCode.dot[i].color);
-		//Serial.print(" , ");
+		Serial.print(" , ");
 	}
-	//Serial.println();
+	Serial.println();
 }
 
 bool Mastermino::entryAvailable()
@@ -84,7 +94,7 @@ uint8_t Mastermino::checkWin()
 	{
 		return PLAYER_WON;
 	}
-	else if (turnCount == ROWS-1)
+	else if (turnCount == ROWS - 1)
 	{
 		return PLAYER_LOST;
 	}
@@ -111,81 +121,89 @@ void Mastermino::finishGuess()
 		//reset guess count
 		guessCount = 0;
 
-		//Set markers on each Holder
-		//Check mastercode
-
-		int masterCode_colors_count[COLORS_SIZE]; //Save the color with the count of repeated colors
-		int guessCode_colors_count[COLORS_SIZE];
-		//Block the over check of the values
-		bool masterCode_checked[COLUMNS];
-		for (int i = 0; i < COLORS_SIZE; i++)
-		{
-			masterCode_colors_count[i] = 0;
-			guessCode_colors_count[i] = 0;
-		}
-
-		//Save each color count
-		for (int i = 0; i < COLUMNS; i++)
-		{
-			masterCode_colors_count[masterCode.dot[i].color]++;
-			guessCode_colors_count[holder[turnCount].dot[i].color]++;
-		}
-
-		//Print colors count info
-		Serial.println("MasterCode info: ");
-		for (int c = 0; c < COLORS_SIZE; c++)
-		{
-			if (masterCode_colors_count[c])
-			{
-				Serial.print("Color n");
-				Serial.print(c);
-				Serial.print(" is ");
-				Serial.println(masterCode_colors_count[c]);
-				Serial.println(" times");
-			}
-		}
-		Serial.println();
-		Serial.println("GUESS info");
-		for (int c = 0; c < COLORS_SIZE; c++)
-		{
-			if (guessCode_colors_count[c])
-			{
-				Serial.print("Color n");
-				Serial.print(c);
-				Serial.print(" is ");
-				Serial.println(guessCode_colors_count[c]);
-				Serial.println(" times");
-			}
-		}
-		Serial.println();
-
-		//Now compare the guess with the masterCode to see how correct is the guess
-
-		bool colorCheck[COLUMNS];
-		for (int i = 0; i < COLUMNS; i++)
-		{
-			colorCheck[i] = false;
-		}
-		// comapre guess and mastercode to see comparisons
-		for (int i = 0; i < COLUMNS; i++)
-		{
-			Dots masterColor = masterCode.dot[i];
-			if (guessCode_colors_count[masterColor.color])
-			{
-				if (masterColor.color == holder[turnCount].dot[i].color)
-				{
-					Serial.println("COLOR and POS ok");
-				}
-				else
-				{
-					Serial.println("COLOR ok");
-				}
-			}
-		}
-
 		//Set the last holder guessed, and increase turn
-		if(turnCount<ROWS-1)turnCount++;
-		
+		if (turnCount < ROWS)
+			turnCount++;
+	}
+}
+
+void Mastermino::getChecks()
+{
+	//Set markers on each Holder
+	//Check mastercode
+	int prevTurn = turnCount-1;
+	int masterCode_colors_count[COLORS_SIZE]; //Save the color with the count of repeated colors
+	int guessCode_colors_count[COLORS_SIZE];
+	//Block the over check of the values
+	bool masterCode_checked[COLUMNS];
+	for (int i = 0; i < COLORS_SIZE; i++)
+	{
+		masterCode_colors_count[i] = 0;
+		guessCode_colors_count[i] = 0;
+	}
+
+	//Save each color count
+	for (int i = 0; i < COLUMNS; i++)
+	{
+		masterCode_colors_count[masterCode.dot[i].color]++;
+		guessCode_colors_count[holder[prevTurn].dot[i].color]++;
+	}
+
+	//Print colors count info
+	Serial.println("MasterCode info: ");
+	for (int c = 0; c < COLORS_SIZE; c++)
+	{
+		if (masterCode_colors_count[c])
+		{
+			Serial.print("Color n");
+			Serial.print(c);
+			Serial.print(" is ");
+			Serial.println(masterCode_colors_count[c]);
+			Serial.println(" times");
+		}
+	}
+	Serial.println();
+	Serial.println("GUESS info");
+	for (int c = 0; c < COLORS_SIZE; c++)
+	{
+		if (guessCode_colors_count[c])
+		{
+			Serial.print("Color n");
+			Serial.print(c);
+			Serial.print(" is ");
+			Serial.println(guessCode_colors_count[c]);
+			Serial.println(" times");
+		}
+	}
+	Serial.println();
+
+	//Now compare the guess with the masterCode to see how correct is the guess
+
+	bool colorCheck[COLUMNS];
+	for (int i = 0; i < COLUMNS; i++)
+	{
+		colorCheck[i] = false;
+	}
+	// comapre guess and mastercode to see comparisons
+	int count = 0;
+	for (int i = 0; i < COLUMNS; i++)
+	{
+		Dots masterColor = masterCode.dot[i];
+		if (guessCode_colors_count[masterColor.color])
+		{
+			if (masterColor.color == holder[prevTurn].dot[i].color)
+			{
+				Serial.println("COLOR and POS ok");
+				holder[prevTurn].markers[count].color = COLOR_RED;
+			}
+			else
+			{
+				Serial.println("COLOR ok");
+				holder[prevTurn].markers[count].color = COLOR_WHITE;
+			}
+			
+			count++;
+		}
 	}
 }
 

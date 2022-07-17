@@ -22,7 +22,7 @@ enum colors
 	COLOR_CYAN,
 	COLOR_PINK,
 	COLOR_WHITE,
-	COLORS_SIZE //Know cout of colors
+	COLORS_SIZE //Know count of colors
 };
 
 enum LED:uint32_t{

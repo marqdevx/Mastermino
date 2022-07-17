@@ -2,7 +2,7 @@
 
 Mastermino::Mastermino()
 {
-	//Set all default values
+	// Set all default values
 	for (int i = 0; i < ROWS; i++)
 	{
 		for (int c = 0; c < COLUMNS; c++)
@@ -20,11 +20,13 @@ Mastermino::~Mastermino()
 
 void Mastermino::start()
 {
-	//Generate the secretCode
+	// Generate the secretCode
 	for (int i = 0; i < COLUMNS; i++)
 	{
 		masterCode.dot[i].color = COLOR_PINK;
 	}
+
+	// Generate a default one
 	/*masterCode.dot[0].color = COLOR_PINK;
 	masterCode.dot[0].index = 0;
 	masterCode.dot[1].color = COLOR_RED;
@@ -37,7 +39,7 @@ void Mastermino::start()
 }
 void Mastermino::newEntry(uint32_t entryColor)
 {
-	//Allow entry, only if there is a dot free of color
+	// Allow entry, only if there is a dot free of color
 	if (!(guessCount >= COLUMNS))
 	{
 		holder[turnCount].dot[guessCount].color = entryColor;
@@ -53,7 +55,7 @@ void Mastermino::newEntry(uint32_t entryColor)
 
 void Mastermino::_generateMastercode()
 {
-	//Generate secret code
+	// Generate secret code
 	Serial.println("New secret code is: ");
 
 	for (int i = 0; i < COLUMNS; i++)
@@ -69,7 +71,7 @@ void Mastermino::_generateMastercode()
 			Serial.println(randomNum);
 			masterCode.dot[i].color = randomNum;
 			masterCode.dot[i].index = i;
-			//Serial.print(masterCode.dot[i].color);
+			// Serial.print(masterCode.dot[i].color);	// In case you want to see the mastercode
 			Serial.print(" , ");
 		}
 	}
@@ -86,10 +88,10 @@ bool Mastermino::entryAvailable()
 uint8_t Mastermino::checkWin()
 {
 	int comparator = 0;
-	//Save each color count
+	// Save each color count
 	for (int i = 0; i < COLUMNS; i++)
 	{
-		//Serial.println(turnCount);
+		// Serial.println(turnCount);
 		if (masterCode.dot[i].color == holder[turnCount].dot[i].color)
 		{
 			comparator++;
@@ -111,7 +113,7 @@ uint8_t Mastermino::checkWin()
 void Mastermino::finishGuess()
 {
 
-	//Tesst
+	// Tesst
 	/*holder[turnCount].dot[0].color = COLOR_BLUE;
 	holder[turnCount].dot[0].index = 0;
 	holder[turnCount].dot[1].color = COLOR_ORANGE;
@@ -119,16 +121,16 @@ void Mastermino::finishGuess()
 	holder[turnCount].dot[2].color = COLOR_BLUE;
 	holder[turnCount].dot[2].index = 2;
 	holder[turnCount].dot[3].color = COLOR_PINK;
-	holder[turnCount].dot[3].index = 3;	
+	holder[turnCount].dot[3].index = 3;
 	guessCount = COLUMNS;*/
 
-	//Only reset values when it is not the last line
+	// Only reset values when it is not the last line
 	if (turnCount < ROWS && guessCount >= COLUMNS)
 	{
-		//reset guess count
+		// reset guess count
 		guessCount = 0;
 
-		//Set the last holder guessed, and increase turn
+		// Set the last holder guessed, and increase turn
 		if (turnCount < ROWS)
 			turnCount++;
 	}
@@ -136,12 +138,12 @@ void Mastermino::finishGuess()
 
 void Mastermino::getChecks()
 {
-	//Set markers on each Holder
-	//Check mastercode
+	// Set markers on each Holder
+	// Check mastercode
 	int prevTurn = turnCount - 1;
-	int masterCode_colors_count[COLORS_SIZE]; //Save the color with the count of repeated colors
+	int masterCode_colors_count[COLORS_SIZE]; // Save the color with the count of repeated colors
 	int guessCode_colors_count[COLORS_SIZE];
-	//Block the over check of the values
+	// Block the over check of the values
 	bool masterCode_checked[COLUMNS];
 	for (int i = 0; i < COLORS_SIZE; i++)
 	{
@@ -149,14 +151,14 @@ void Mastermino::getChecks()
 		guessCode_colors_count[i] = 0;
 	}
 
-	//Save each color count
+	// Save each color count
 	for (int i = 0; i < COLUMNS; i++)
 	{
 		masterCode_colors_count[masterCode.dot[i].color]++;
 		guessCode_colors_count[holder[prevTurn].dot[i].color]++;
 	}
 
-	//Print colors count info
+	// Print colors count info
 	Serial.println("MasterCode info: ");
 	for (int c = 0; c < COLORS_SIZE; c++)
 	{
@@ -184,7 +186,7 @@ void Mastermino::getChecks()
 	}
 	Serial.println();
 
-	//Now compare the guess with the masterCode to see how correct is the guess
+	// Now compare the guess with the masterCode to see how correct is the guess
 
 	bool colorCheck[COLUMNS];
 	for (int i = 0; i < COLUMNS; i++)
@@ -216,10 +218,5 @@ void Mastermino::getChecks()
 
 Dots::Dots() {}
 Dots::~Dots() {}
-Holder::Holder()
-{
-}
-
-Holder::~Holder()
-{
-}
+Holder::Holder() {}
+Holder::~Holder() {}

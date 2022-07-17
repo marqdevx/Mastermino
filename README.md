@@ -1,3 +1,5 @@
+[![Compile Examples](https://github.com/marqdevx/Mastermino/actions/workflows/Compile.yml/badge.svg)](https://github.com/marqdevx/Mastermino/actions/workflows/Compile.yml)
+
 # Mastermino
 Play the classic game "Mastermind" with your Arduino
 

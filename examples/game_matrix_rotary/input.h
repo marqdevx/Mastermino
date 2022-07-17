@@ -28,10 +28,8 @@
 #include "matrix.h"
 
 // Example for Arduino UNO with input signals on pin 2 and 3
-#define PIN_IN1 0
-#define PIN_IN2 1
-
-
+#define PIN_IN1 4
+#define PIN_IN2 5
 
 // Setup a RotaryEncoder with 4 steps per latch for the 2 signal input pins:
 // RotaryEncoder encoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::FOUR3);
@@ -55,19 +53,16 @@ void rotarySetup()
   attachInterrupt(PIN_IN2, checkPosition, CHANGE);
 } // setup()
 
-
 // Read the current position of the encoder and print out when changed.
 void encoderUpdate()
 {
-
-
-  static int pos = 0;
+  static int pos = 1;
   encoder.tick();
 
   int newPos = pos + (int)encoder.getDirection();
 
-  if (newPos > COLORS_SIZE - 1) newPos = 0;
-  if (newPos < 0) newPos = COLORS_SIZE - 1;
+  if (newPos > COLORS_SIZE - 1) newPos = 1;
+  if (newPos < 1) newPos = COLORS_SIZE - 1;
 
   if (pos != newPos) {
 
@@ -77,13 +72,9 @@ void encoderUpdate()
     Serial.println((int)(encoder.getDirection()));
     pos = newPos;
 
-
-
-
     setpixel(mastermino.turnCount, mastermino.guessCount, pos);
-
-
   }
+
   if (mastermino.entryAvailable()) {
     if (!digitalRead(7) && !bounceBlock) {
       if (pos <= 0) return;
@@ -91,11 +82,9 @@ void encoderUpdate()
       bounceBlock = true;
       setpixel(mastermino.turnCount, mastermino.guessCount, 0);
       pos = 0;
-
     } else if (digitalRead(7) && bounceBlock) {
       bounceBlock = false;
     }
-
   } else {
     mastermino.finishGuess();
     mastermino.getChecks();

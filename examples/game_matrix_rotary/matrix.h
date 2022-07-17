@@ -50,16 +50,37 @@ void test() {
 
 void updateMatrix() {
   matrix.clear();
-  matrix.setBrightness(50);
+
   for (int i = 0; i < ROWS; i++) {
     for (int c = 0; c < COLUMNS; c++) {
       uint32_t color = mastermino.holder[i].dot[c].color;
       uint32_t newColor = 0;
       setpixel(i, c, color);
-
     }
   }
+  matrix.setBrightness(40);
 
+  for (int x = 0; x < 3; x++) {
+
+    for (int c = 0; c < COLUMNS; c++) {
+      uint32_t color = mastermino.holder[mastermino.turnCount - 1].markers[c].color;
+      uint32_t newColor = 0;
+      setpixel(mastermino.turnCount - 1, c + 4, color);
+    }
+
+    matrix.setBrightness(10);
+    matrix.show();
+    delay(150);
+
+    for (int c = 0; c < COLUMNS; c++) {
+      uint32_t color = mastermino.holder[mastermino.turnCount - 1].markers[c].color;
+      uint32_t newColor = 0;
+      setpixel(mastermino.turnCount - 1, c + 4, 0);
+    }
+
+    matrix.show();
+    delay(150);
+  }
   for (int i = 0; i < ROWS; i++) {
     for (int c = 0; c < COLUMNS; c++) {
       uint32_t color = mastermino.holder[i].markers[c].color;
@@ -67,4 +88,32 @@ void updateMatrix() {
       setpixel(i, c + 4, color);
     }
   }
+  matrix.setBrightness(10);
+  matrix.show();
+}
+
+void blinkMatrix(uint32_t color) {
+  matrix.setBrightness(30);
+  for (int z = 0; z < 4; z++) {
+    for (int i = 0; i < ROWS; i++) {
+      for (int c = 0; c < COLUMNS + 4; c++) {
+        uint32_t newColor = 0;
+        setpixel(i, c, color);
+      }
+    }
+
+    matrix.show();
+    delay(150);
+    for (int i = 0; i < ROWS; i++) {
+      for (int c = 0; c < COLUMNS + 4; c++) {
+        uint32_t newColor = 0;
+        setpixel(i, c, 0);
+      }
+    }
+
+    matrix.show();
+    delay(150);
+  }
+
+  delay(5000);
 }

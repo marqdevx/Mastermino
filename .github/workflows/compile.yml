@@ -47,8 +47,9 @@ jobs:
             # Install the library from the local path.
             - source-path: ./
             # Install library dependencies.
-            - name: Adafruit_SSD1306
-            - name: Adafruit_GFX
+            - name: Adafruit SSD1306
+            - name: Adafruit GFX Library
+            - name: RotaryEncoder
           sketch-paths: |
             - './examples/game_matrix_rotary'
             
